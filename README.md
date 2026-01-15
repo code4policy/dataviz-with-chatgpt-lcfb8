@@ -1,5 +1,7 @@
 # Dataviz With GPT
 
+Assignment completed by Elsa Nisa and Lydia Brosnahan.
+
 ## Learning Objectives
 
 Students will be able to:

@@ -33,6 +33,21 @@ h1 {
   color: var(--muted);
 }
 
+.chart-toggle {
+  border: 1px solid #d1d5db;
+  background: #fff;
+  color: var(--text);
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  cursor: pointer;
+  margin-bottom: 14px;
+}
+
+.chart-toggle:hover {
+  background: #f3f4f6;
+}
+
 .credits {
   margin: 8px 0 0;
   color: var(--muted);

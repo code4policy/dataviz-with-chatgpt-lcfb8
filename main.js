@@ -26,11 +26,6 @@ const gridGroup = svg.append("g").attr("class", "grid");
 const yAxisGroup = svg.append("g").attr("class", "axis");
 const xAxisGroup = svg.append("g").attr("class", "axis");
 const xLabel = svg.append("text").attr("class", "axis-label").attr("text-anchor", "middle");
-const yLabel = svg
-  .append("text")
-  .attr("class", "axis-label")
-  .attr("text-anchor", "middle")
-  .attr("transform", "rotate(-90)");
 
 d3.csv("boston_311_2025_by_reason.csv", (d) => ({
   reason: d.reason,
@@ -39,6 +34,7 @@ d3.csv("boston_311_2025_by_reason.csv", (d) => ({
   .then((data) => {
     const allData = data.sort((a, b) => d3.descending(a.count, b.count));
     const top10 = allData.slice(0, 10);
+    const totalReasons = allData.length;
     let showAll = false;
 
     const render = (rows) => {
@@ -68,11 +64,6 @@ d3.csv("boston_311_2025_by_reason.csv", (d) => ({
       xAxisGroup.attr("transform", `translate(0,${height})`).call(xAxis);
 
       xLabel.attr("x", width / 2).attr("y", height + 45).text("Count of 311 calls in 2025");
-
-      yLabel
-        .attr("x", -height / 2)
-        .attr("y", -margin.left + 20)
-        .text("Reason for 311 call (categories)");
 
       const bars = svg.selectAll(".bar").data(rows, (d) => d.reason);
 
@@ -106,11 +97,12 @@ d3.csv("boston_311_2025_by_reason.csv", (d) => ({
     };
 
     render(top10);
+    toggleButton.text(`Show all (${totalReasons}) reasons`);
 
     toggleButton.on("click", () => {
       showAll = !showAll;
       render(showAll ? allData : top10);
-      toggleButton.text(showAll ? "Show top 10 reasons" : "Show all reasons");
+      toggleButton.text(showAll ? "Show top 10 reasons" : `Show all (${totalReasons}) reasons`);
     });
   })
   .catch((error) => {

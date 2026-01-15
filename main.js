@@ -2,8 +2,14 @@ const margin = { top: 20, right: 30, bottom: 60, left: 220 };
 const width = 900 - margin.left - margin.right;
 const height = 520 - margin.top - margin.bottom;
 
-const svg = d3
-  .select("#chart")
+const chart = d3.select("#chart");
+
+const tooltip = chart
+  .append("div")
+  .attr("class", "tooltip")
+  .style("opacity", 0);
+
+const svg = chart
   .append("svg")
   .attr("viewBox", `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`)
   .append("g")
@@ -62,7 +68,7 @@ d3.csv("boston_311_2025_by_reason.csv", (d) => ({
       .attr("text-anchor", "middle")
       .attr("x", width / 2)
       .attr("y", height + 45)
-      .text("count of 311 calls in 2025");
+      .text("Count of 311 calls in 2025");
 
     svg
       .append("text")
@@ -71,7 +77,7 @@ d3.csv("boston_311_2025_by_reason.csv", (d) => ({
       .attr("transform", "rotate(-90)")
       .attr("x", -height / 2)
       .attr("y", -margin.left + 20)
-      .text("reason for 311 call (categories)");
+      .text("Reason for 311 call (categories)");
 
     svg
       .selectAll(".bar")
@@ -83,8 +89,20 @@ d3.csv("boston_311_2025_by_reason.csv", (d) => ({
       .attr("height", y.bandwidth())
       .attr("x", 0)
       .attr("width", (d) => x(d.count))
-      .append("title")
-      .text((d) => `${d.reason}: ${format(d.count)}`);
+      .on("mouseover", (event, d) => {
+        tooltip
+          .style("opacity", 1)
+          .text(`${d.reason}: ${format(d.count)}`);
+      })
+      .on("mousemove", (event) => {
+        const [xPos, yPos] = d3.pointer(event, chart.node());
+        tooltip
+          .style("left", `${xPos + 12}px`)
+          .style("top", `${yPos - 12}px`);
+      })
+      .on("mouseout", () => {
+        tooltip.style("opacity", 0);
+      });
   })
   .catch((error) => {
     console.error("Error loading CSV:", error);
